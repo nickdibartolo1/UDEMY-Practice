@@ -1,0 +1,32 @@
+[
+    {
+    "id": "1",
+    "color": "red",
+    "rainbow location": "first"
+    },
+    {
+    "id": "2",
+    "color": "orange",
+    "rainbow location": "second"
+    },
+    {
+    "id": "3",
+    "color": "yellow",
+    "rainbow location": "third"
+    },
+    {
+    "id": "4",
+    "color": "green",
+    "rainbow location": "fourth"
+    },
+    {
+    "id": "5",
+    "color": "blue",
+    "rainbow location": "fifth"
+    },
+    {
+    "id": "6",
+    "color": "violet",
+    "rainbow location": "sixth"
+    }
+]
