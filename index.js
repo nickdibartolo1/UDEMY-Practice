@@ -6,7 +6,7 @@ let router = express.Router();
 
 app.use(express.json());
 
-
+//router for getting the color.json data to be seen in Postman
 router.get('/', (req, res, next) => {
     colorsRepo.get((data) => {
         res.status(200).json({
@@ -20,8 +20,28 @@ router.get('/', (req, res, next) => {
     })
 })
 
+//router for SEARCHING for data by its name or ID through a get request
+//search?id=n&name=str
+router.get('/search', (req, res, next) => {
+    let searchObject = {
+        "id": req.query.id,
+        "name": req.query.name
+    };
+
+    colorsRepo.search(searchObject, (data) => {
+        res.status(200).json({
+            "status": 200,
+            "statusText": "OK",
+            "message": "Search retrieved",
+            "data": data
+        })
+    }), (err) => {
+        next(err)
+    }
+})
 
 
+//router for getting a specific piece of data by its ID
 router.get('/:id', (req, res, next) => {
     colorsRepo.getByID(req.params.id, (data) => {
         if (data) {
