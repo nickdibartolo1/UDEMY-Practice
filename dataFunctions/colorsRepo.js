@@ -12,5 +12,18 @@ let colorsRepo = {
                 resolve(JSON.parse(data))
             }
         })
+    },
+
+    getByID: (id, resolve, reject) => {
+        fs.readFile(NEEDED_FILE, (err, data) => {
+            if (err) {
+                reject(err)
+            } else {
+                let city = JSON.parse(data).find(p => p.id == id);
+                resolve(city)
+            }
+        });
     }
 }
+
+module.exports = colorsRepo;
