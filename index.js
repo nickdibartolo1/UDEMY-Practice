@@ -62,10 +62,22 @@ router.get('/:id', (req, res, next) => {
                 }
             })
         }
-    })
+    });
 })
 
-
+router.post("/", (req, res, next) => {
+    colorsRepo.insert(req.body, (data) => {
+        res.status(201).send({
+            "status": 201,
+            "statusText": "Created",
+            "message": "new color added",
+            "data": data
+        });
+        (err) => {
+            next(err)
+        }
+    })
+})
 
 
 

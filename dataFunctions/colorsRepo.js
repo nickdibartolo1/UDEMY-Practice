@@ -28,8 +28,8 @@ let colorsRepo = {
         });
     },
 
-//search function pulling the JSON file and seeing if there is data exisitng that is being requested
-//if so, it is then sent through to the client
+    //search function pulling the JSON file and seeing if there is data exisitng that is being requested
+    //if so, it is then sent through to the client
     search: (searchObject, resolve, reject) => {
         fs.readFile(NEEDED_FILE, (err, data) => {
             if (err) {
@@ -45,8 +45,28 @@ let colorsRepo = {
                 }
             }
         });
-    }
+    },
 
+
+    //insert function for inserting new data in to the JSON file
+    insert: (newData, resolve, reject) => {
+        fs.readFile(NEEDED_FILE, (err, data) => {
+            if (err) {
+                reject(err)
+            } else {
+                let colors = JSON.parse(data);
+                colors.push(newData);
+                fs.writeFile(NEEDED_FILE, JSON.stringify(colors), (err) => {
+                    if (err) {
+                        reject(err)
+                    } else {
+                        resolve(newData)
+                    }
+                });
+            }
+        });
+
+    }
 
 
 }
