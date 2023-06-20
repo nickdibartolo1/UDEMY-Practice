@@ -1,10 +1,14 @@
 let express = require('express');
 let colorsRepo = require('./dataFunctions/colorsRepo');
 let app = express();
+let CORS = require('cors')
+
 
 let router = express.Router();
 
 app.use(express.json());
+
+app.use(CORS());
 
 //router for getting the color.json data to be seen in Postman
 router.get('/', (req, res, next) => {
@@ -50,8 +54,9 @@ router.get('/:id', (req, res, next) => {
                 "statusText": "OK",
                 "message": "Color retrieved",
                 "data": data
-            })
-        } else {
+            });
+        }
+        else {
             res.status(404).send({
                 "status": 404,
                 "statusText": "Not Found",
@@ -62,9 +67,12 @@ router.get('/:id', (req, res, next) => {
                 }
             })
         }
-    });
+    }, (err) => {
+        next(err);
+    })
 })
 
+//router for inserting new data into the JSON file
 router.post("/", (req, res, next) => {
     colorsRepo.insert(req.body, (data) => {
         res.status(201).send({
@@ -76,6 +84,66 @@ router.post("/", (req, res, next) => {
         (err) => {
             next(err)
         }
+    })
+})
+
+
+//router for updating current data with new data inputs by looking for
+// an ID
+router.put('/:id', (req, res, next) => {
+    colorsRepo.getByID(req.params.id, (data) => {
+        if (data) {
+            //if we find a color we attempt to update data here
+            colorsRepo.update(req.body, req.params.id, (data) => {
+                res.status(201).send({
+                    "status": 201,
+                    "statusText": "OK",
+                    "message": "color '" + req.params.id + "' updated",
+                    "data": data
+                })
+            })
+        }
+        else {
+            res.status(404).send({
+                "status": 404,
+                "statusText": "Not Found",
+                "message": "The color with the id '" + req.params.id + "' could not be found :(",
+                "error": {
+                    "code": "NOT_FOUND",
+                    "message": "The color with the id '" + req.params.id + "' could not be found :("
+                }
+            })
+        }
+    })
+})
+
+
+//router for deleting data
+router.delete('/:id', (req, res, next) => {
+    colorsRepo.getByID(req.params.id, (data) => {
+        if (data) {
+            //attempt to delete this item
+            colorsRepo.delete(req.params.id, (data) => {
+                res.status(200).json({
+                    "status": 201,
+                    "statusText": "OK",
+                    "message": "The color '" + req.params.id + "' has been deleted",
+                    "data": "The color '" + req.params.id + "' has been deleted"
+                })
+            })
+        } else {
+            res.status(404).send({
+                "status": 404,
+                "statusText": "Not Found",
+                "message": "The color with the id '" + req.params.id + "' could not be found :(",
+                "error": {
+                    "code": "NOT_FOUND",
+                    "message": "The ccolor with the id '" + req.params.id + "' could not be found :("
+                }
+            })
+        }
+    }, (err) => {
+        next(err)
     })
 })
 

@@ -16,17 +16,20 @@ let colorsRepo = {
         })
     },
 
-    //function for locating a color ("data") by its ID
+    // function for locating a color ("data") by its ID
     getByID: (id, resolve, reject) => {
         fs.readFile(NEEDED_FILE, (err, data) => {
             if (err) {
                 reject(err)
-            } else {
-                let city = JSON.parse(data).find(p => p.id == id);
-                resolve(city)
+            }
+            else {
+                let color = JSON.parse(data).find(c => c.id == id);
+                resolve(color);
             }
         });
+
     },
+
 
     //search function pulling the JSON file and seeing if there is data exisitng that is being requested
     //if so, it is then sent through to the client
@@ -41,8 +44,8 @@ let colorsRepo = {
                     colors = colors.filter(
                         c => (searchObject.id ? c.id == searchObject.id : true) &&
                             (searchObject.name ? c.name.toLowerCase().indexOf(searchObject.name) >= 0 : true))
-                    resolve(colors)
                 }
+                resolve(colors);
             }
         });
     },
@@ -66,6 +69,51 @@ let colorsRepo = {
             }
         });
 
+    },
+    //function for updating existing JSON data through locating its ID
+    update: (newData, id, resolve, reject) => {
+        fs.readFile(NEEDED_FILE, (err, data) => {
+            if (err) {
+                reject(err);
+            } else {
+                let colors = JSON.parse(data);
+                let clr = colors.find(c => c.id == id);
+                if (clr) {
+                    Object.assign(clr, newData);
+                    fs.writeFile(NEEDED_FILE, JSON.stringify(colors), (err) => {
+                        if (err) {
+                            reject(err)
+                        }
+                        else {
+                            resolve(newData)
+                        }
+                    });
+                }
+            }
+        });
+    },
+
+    //function for deleting data
+    delete: (id, resolve, reject) => {
+        fs.readFile(NEEDED_FILE, (err, data) => {
+            if (err) {
+                reject(err)
+            } else {
+                let colors = JSON.parse(data);
+                let colorIndex = colors.findIndex(c => c.id == id);
+                if (colorIndex != -1) {
+                    colors.splice(colorIndex, 1);
+                    fs.writeFile(NEEDED_FILE, JSON.stringify(colors), (err) => {
+                        if (err) {
+                            reject(err)
+                        } else {
+                            resolve(colorIndex)
+                        }
+                    });
+
+                }
+            }
+        });
     }
 
 
